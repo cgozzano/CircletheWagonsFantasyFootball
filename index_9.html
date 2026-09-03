@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circle the Wagons — Office of the Supreme Commissioner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0B0E14;
+    --surface: #141922;
+    --surface-2: #1B212C;
+    --line: #262E3B;
+    --ink: #E8ECF2;
+    --muted: #7C8695;
+    --gold: #D4AF37;
+    --gold-dim: #8A7328;
+    --steel: #4A7FE8;
+    --steel-dim: #2E4E8F;
+    --win: #3FB68B;
+    --loss: #D9544B;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(212,175,55,0.08), transparent 60%),
+      radial-gradient(1200px 600px at 85% 0%, rgba(74,127,232,0.08), transparent 60%),
+      var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .display{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:0.02em;}
+
+  /* ===== Masthead / Charter header ===== */
+  .charter{
+    border-bottom:1px solid var(--line);
+    padding:28px 24px 22px;
+    position:relative;
+  }
+  .charter::before{
+    content:"";
+    position:absolute; left:0; right:0; top:0; height:3px;
+    background:linear-gradient(90deg, var(--gold), var(--steel));
+  }
+  .charter-inner{
+    max-width:1180px; margin:0 auto;
+    display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap;
+  }
+  .seal{
+    width:56px;height:56px;border-radius:50%;
+    border:2px solid var(--gold);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Oswald',sans-serif; font-weight:700; font-size:20px; color:var(--gold);
+    flex-shrink:0;
+    box-shadow: 0 0 0 4px rgba(212,175,55,0.08);
+  }
+  .charter-title-row{display:flex; align-items:center; gap:16px;}
+  .charter h1{
+    font-size:clamp(28px,4.2vw,44px);
+    margin:0; line-height:0.95; font-weight:700;
+  }
+  .charter .eyebrow{
+    color:var(--muted); font-size:11px; letter-spacing:0.18em; margin-bottom:6px;
+    font-family:'IBM Plex Mono',monospace; text-transform:uppercase;
+  }
+  .charter-meta{
+    text-align:right; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--muted);
+    line-height:1.7;
+  }
+  .charter-meta b{color:var(--ink); font-weight:600;}
+  .preamble{
+    max-width:1180px; margin:16px auto 0; padding:0 24px;
+    font-family:'IBM Plex Mono',monospace; font-style:italic; font-size:12px;
+    color:var(--muted); line-height:1.7; border-left:2px solid var(--gold-dim); padding-left:16px;
+  }
+
+  /* ===== Nav tabs ===== */
+  .tabs{
+    max-width:1180px; margin:0 auto; padding:0 24px;
+    display:flex; gap:4px; margin-top:22px; flex-wrap:wrap;
+  }
+  .tab{
+    font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:0.04em;
+    font-size:13px; font-weight:500; color:var(--muted);
+    background:transparent; border:1px solid var(--line); border-bottom:none;
+    padding:10px 18px; cursor:pointer; border-radius:6px 6px 0 0;
+  }
+  .tab:hover{color:var(--ink);}
+  .tab.active{color:var(--ink); background:var(--surface); border-color:var(--line);}
+  .tab:focus-visible{outline:2px solid var(--steel); outline-offset:2px;}
+
+  main{max-width:1180px; margin:0 auto; padding:0 24px 80px;}
+  .panel{
+    background:var(--surface); border:1px solid var(--line);
+    border-radius:0 10px 10px 10px; padding:28px; margin-top:0;
+  }
+  .view{display:none;}
+  .view.active{display:block;}
+
+  h2.section-title{
+    font-size:22px; margin:0 0 4px; font-weight:700;
+  }
+  .section-sub{color:var(--muted); font-size:13px; margin:0 0 24px;}
+
+  /* ===== Setup card ===== */
+  .setup-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:8px;}
+  @media(max-width:640px){.setup-grid{grid-template-columns:1fr;}}
+  .field label{
+    display:block; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.06em;
+    color:var(--muted); text-transform:uppercase; margin-bottom:6px;
+  }
+  .field input{
+    width:100%; background:var(--surface-2); border:1px solid var(--line); color:var(--ink);
+    padding:10px 12px; border-radius:6px; font-family:'IBM Plex Mono',monospace; font-size:13px;
+  }
+  .field input:focus-visible{outline:2px solid var(--steel); outline-offset:1px;}
+  .btn{
+    font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:0.05em; font-weight:500;
+    background:var(--gold); color:#12130E; border:none; padding:11px 22px; border-radius:6px;
+    cursor:pointer; font-size:13px; margin-top:14px;
+  }
+  .btn:hover{filter:brightness(1.08);}
+  .btn:focus-visible{outline:2px solid var(--steel); outline-offset:2px;}
+  .btn.secondary{background:transparent; border:1px solid var(--line); color:var(--ink);}
+  .hint{color:var(--muted); font-size:12px; margin-top:10px; line-height:1.6;}
+  .hint code{background:var(--surface-2); padding:2px 5px; border-radius:4px;}
+
+  /* ===== Division blocks ===== */
+  .divisions{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:20px;}
+  @media(max-width:800px){.divisions{grid-template-columns:1fr;}}
+  .division{
+    border:1px solid var(--line); border-radius:8px; overflow:hidden;
+  }
+  .division-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 16px; font-family:'Oswald',sans-serif; text-transform:uppercase;
+    letter-spacing:0.03em; font-weight:600; font-size:14px;
+  }
+  .division-head.elite{background:rgba(212,175,55,0.12); color:var(--gold); border-bottom:1px solid rgba(212,175,55,0.3);}
+  .division-head.tier2{background:rgba(74,127,232,0.12); color:var(--steel); border-bottom:1px solid rgba(74,127,232,0.3);}
+  table{width:100%; border-collapse:collapse; font-size:13px;}
+  th{
+    text-align:left; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.06em;
+    text-transform:uppercase; color:var(--muted); padding:10px 14px; border-bottom:1px solid var(--line);
+  }
+  td{padding:10px 14px; border-bottom:1px solid var(--line); font-family:'IBM Plex Mono',monospace;}
+  tr:last-child td{border-bottom:none;}
+  td.team-name{font-family:'Inter',sans-serif; font-weight:600; font-size:13px;}
+  .rank{color:var(--muted); width:28px;}
+
+  /* ===== Rosters ===== */
+  .roster-teams{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; margin-top:16px;}
+  .roster-card{border:1px solid var(--line); border-radius:8px; padding:16px; background:var(--surface-2);}
+  .roster-card h4{margin:0 0 2px; font-size:15px;}
+  .roster-card .owner{color:var(--muted); font-size:12px; margin-bottom:10px;}
+  .player-row{
+    display:flex; justify-content:space-between; font-size:12px; padding:5px 0;
+    border-bottom:1px dashed var(--line);
+  }
+  .player-row:last-child{border-bottom:none;}
+  .player-row .pos{
+    font-family:'IBM Plex Mono',monospace; color:var(--muted); font-size:10px;
+    background:var(--surface); padding:1px 6px; border-radius:4px; margin-right:8px;
+  }
+
+  /* ===== Matchups ===== */
+  .week-picker{display:flex; align-items:center; gap:10px; margin-bottom:18px;}
+  .week-picker select{
+    background:var(--surface-2); border:1px solid var(--line); color:var(--ink);
+    padding:8px 10px; border-radius:6px; font-family:'IBM Plex Mono',monospace; font-size:13px;
+  }
+  .matchup-list{display:grid; gap:10px;}
+  .matchup{
+    display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:14px;
+    border:1px solid var(--line); border-radius:8px; padding:14px 18px; background:var(--surface-2);
+  }
+  .matchup .side{display:flex; align-items:center; gap:10px;}
+  .matchup .side.right{flex-direction:row-reverse; text-align:right;}
+  .matchup .score{font-family:'Oswald',sans-serif; font-size:22px; font-weight:600;}
+  .matchup .vs{color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:11px;}
+  .matchup .win .score{color:var(--win);}
+
+  /* ===== Bowl Game ===== */
+  .bowl-hero{
+    text-align:center; padding:26px 16px 34px; border-bottom:1px solid var(--line); margin-bottom:26px;
+  }
+  .bowl-hero .eyebrow{color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.2em;}
+  .bowl-hero h2{font-size:clamp(26px,4vw,40px); margin:6px 0 0;}
+  .bowl-board{
+    display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:24px;
+    max-width:820px; margin:0 auto;
+  }
+  .bowl-team{text-align:center;}
+  .bowl-team .crest{
+    width:64px;height:64px;border-radius:50%; margin:0 auto 12px; display:flex; align-items:center; justify-content:center;
+    font-family:'Oswald',sans-serif; font-weight:700; font-size:22px;
+  }
+  .bowl-team.elite .crest{background:rgba(212,175,55,0.15); color:var(--gold); border:2px solid var(--gold);}
+  .bowl-team.tier2 .crest{background:rgba(74,127,232,0.15); color:var(--steel); border:2px solid var(--steel);}
+  .bowl-team .label{font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase;}
+  .bowl-team select{
+    width:100%; margin-top:10px; background:var(--surface-2); border:1px solid var(--line); color:var(--ink);
+    padding:8px; border-radius:6px; font-size:13px;
+  }
+  .bowl-vs{font-family:'Oswald',sans-serif; font-size:28px; color:var(--muted);}
+  .bowl-score-row{display:flex; justify-content:center; gap:60px; margin-top:24px;}
+  .bowl-score-row .field{width:140px;}
+  .bowl-score-row input{text-align:center; font-family:'Oswald',sans-serif; font-size:24px; font-weight:600;}
+  .bowl-result{
+    text-align:center; margin-top:26px; font-family:'Oswald',sans-serif; font-size:18px;
+    padding:14px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line);
+  }
+  .bowl-result.decided{color:var(--gold); border-color:rgba(212,175,55,0.4);}
+  .empty{color:var(--muted); font-size:13px; padding:20px; text-align:center;}
+  .loading{color:var(--muted); font-size:13px; padding:20px; text-align:center; font-family:'IBM Plex Mono',monospace;}
+
+  /* ===== Champions ===== */
+  .champ-list{display:flex; flex-direction:column; gap:1px; margin-top:8px; border:1px solid var(--line); border-radius:8px; overflow:hidden;}
+  .champ-row{
+    display:grid; grid-template-columns:70px 1fr auto; align-items:center; gap:16px;
+    padding:14px 18px; background:var(--surface-2);
+  }
+  .champ-row:nth-child(odd){background:var(--surface);}
+  .champ-year{
+    font-family:'Oswald',sans-serif; font-weight:700; font-size:18px; color:var(--gold);
+  }
+  .champ-name{font-family:'Inter',sans-serif; font-weight:600; font-size:15px;}
+  .champ-league{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted);
+    text-transform:uppercase; letter-spacing:0.05em; text-align:right;
+  }
+  .champ-note{
+    font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); font-style:italic;
+  }
+
+  /* ===== Power Rankings ===== */
+  .pr-methodology{
+    border:1px solid var(--line); border-radius:8px; margin-bottom:20px; overflow:hidden;
+  }
+  .pr-toggle{
+    width:100%; text-align:left; background:var(--surface-2); border:none; color:var(--ink);
+    padding:12px 16px; font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:0.03em;
+    font-size:12px; font-weight:600; cursor:pointer;
+  }
+  .pr-methodology-body{
+    padding:0 18px; max-height:0; overflow:hidden; transition:max-height 0.25s ease, padding 0.25s ease;
+  }
+  .pr-methodology-body.open{ padding:16px 18px 18px; max-height:600px; }
+  .pr-methodology-body p{font-size:13px; line-height:1.7; margin:0 0 10px;}
+  .pr-methodology-body .const-list{font-size:13px; margin-bottom:10px;}
+
+  .pr-row{
+    display:grid; grid-template-columns:44px 1fr auto auto auto auto; align-items:center; gap:14px;
+    padding:12px 16px; border-bottom:1px solid var(--line); font-size:13px;
+  }
+  .pr-row:last-child{border-bottom:none;}
+  .pr-row.head{
+    font-family:'IBM Plex Mono',monospace; font-size:10px; text-transform:uppercase; color:var(--muted);
+    letter-spacing:0.05em; background:var(--surface-2);
+  }
+  .pr-rank{font-family:'Oswald',sans-serif; font-weight:700; font-size:18px; color:var(--gold); text-align:center;}
+  .pr-team{font-weight:600;}
+  .pr-league-tag{
+    font-family:'IBM Plex Mono',monospace; font-size:9px; padding:2px 7px; border-radius:10px;
+    text-transform:uppercase; letter-spacing:0.04em; margin-left:8px;
+  }
+  .pr-league-tag.elite{background:rgba(212,175,55,0.15); color:var(--gold);}
+  .pr-league-tag.tier2{background:rgba(74,127,232,0.15); color:var(--steel);}
+  .pr-stat{font-family:'IBM Plex Mono',monospace; color:var(--muted); text-align:right; min-width:52px;}
+  .pr-score{font-family:'IBM Plex Mono',monospace; font-weight:600; color:var(--ink); text-align:right; min-width:56px;}
+  .pr-list{border:1px solid var(--line); border-radius:8px; overflow:hidden;}
+  @media(max-width:760px){
+    .pr-row{grid-template-columns:32px 1fr auto; row-gap:4px;}
+    .pr-row .pr-stat:nth-of-type(n+2){display:none;}
+  }
+
+  /* ===== Dues ===== */
+  .dues-summary{
+    display:flex; gap:24px; flex-wrap:wrap; margin-bottom:20px; padding:16px 20px;
+    border:1px solid var(--line); border-radius:8px; background:var(--surface-2);
+  }
+  .dues-stat{display:flex; flex-direction:column; gap:2px;}
+  .dues-stat .num{font-family:'Oswald',sans-serif; font-size:24px; font-weight:700; color:var(--gold);}
+  .dues-stat .lbl{font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em;}
+  .dues-list{display:flex; flex-direction:column; gap:1px;}
+  .dues-row{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:11px 16px; background:var(--surface); font-size:13px;
+  }
+  .dues-row:nth-child(even){background:var(--surface-2);}
+  .dues-name{font-weight:600;}
+  .dues-badge{
+    font-family:'IBM Plex Mono',monospace; font-size:10px; padding:3px 10px; border-radius:10px;
+    text-transform:uppercase; letter-spacing:0.05em;
+  }
+  .dues-badge.paid{background:rgba(63,182,139,0.15); color:var(--win);}
+  .dues-badge.unpaid{background:rgba(217,84,75,0.15); color:var(--loss);}
+
+  /* ===== Forecasts ===== */
+  .fc-list{display:grid; gap:10px;}
+  .fc-card{
+    display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:14px;
+    border:1px solid var(--line); border-radius:8px; padding:14px 18px; background:var(--surface-2);
+  }
+  .fc-side{display:flex; flex-direction:column; gap:2px; align-items:flex-start;}
+  .fc-side.right{align-items:flex-end; text-align:right;}
+  .fc-team{font-weight:600; font-size:14px;}
+  .fc-proj{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted);}
+  .fc-favorite .fc-team{color:var(--gold);}
+  .fc-favorite .fc-proj{color:var(--gold-dim);}
+  .fc-pct{
+    font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:0.04em;
+    background:rgba(212,175,55,0.15); color:var(--gold); border-radius:10px; padding:2px 8px; margin-top:4px;
+    display:inline-block;
+  }
+  .fc-mid{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted); text-align:center;}
+  .fc-league-h{font-family:'Oswald',sans-serif; font-size:15px; text-transform:uppercase; letter-spacing:0.03em; margin:22px 0 10px;}
+  .fc-league-h:first-child{margin-top:0;}
+
+  /* ===== Draft Grades ===== */
+  .grades-divisions{align-items:start;}
+  .grade-list{display:flex; flex-direction:column; gap:8px; padding:14px;}
+  .grade-card{
+    display:flex; align-items:center; gap:14px; background:var(--surface-2);
+    border:1px solid var(--line); border-radius:8px; padding:12px 14px; cursor:pointer;
+  }
+  .grade-badge{
+    width:44px; height:44px; border-radius:8px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Oswald',sans-serif; font-weight:700; font-size:16px;
+  }
+  .grade-badge.tier-a{background:var(--gold); color:#12130E;}
+  .grade-badge.tier-b{background:var(--gold-dim); color:#12130E;}
+  .grade-badge.tier-c{background:#3A4353; color:var(--ink);}
+  .grade-info{flex:1; min-width:0;}
+  .grade-name-row{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;}
+  .grade-name{font-weight:600; font-size:14px;}
+  .grade-archetype{
+    font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--gold);
+    letter-spacing:0.06em; text-transform:uppercase;
+  }
+  .grade-blurb{font-size:12px; color:var(--muted); margin-top:2px; line-height:1.5;}
+  .const-link{color:var(--steel); text-decoration:none; border-bottom:1px dotted var(--steel-dim);}
+  .const-link:hover{color:var(--ink);}
+
+  /* ===== Constitution ===== */
+  .const-block{
+    padding:20px 0; border-bottom:1px solid var(--line);
+  }
+  .const-block:last-of-type{border-bottom:none;}
+  .const-h{
+    font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:0.03em;
+    font-size:15px; color:var(--gold); margin:0 0 10px; font-weight:600;
+  }
+  .const-block p{font-size:14px; line-height:1.7; color:var(--ink); margin:0 0 10px;}
+  .const-block p:last-child{margin-bottom:0;}
+  .const-list{margin:0 0 10px; padding-left:20px; font-size:14px; line-height:1.7;}
+  .const-list li{margin-bottom:6px;}
+  .const-note{
+    font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--muted);
+    border-left:2px solid var(--steel-dim); padding-left:12px; font-style:italic;
+  }
+  .const-example{
+    font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--muted);
+    background:var(--surface-2); border:1px solid var(--line); border-radius:6px;
+    padding:12px 16px; display:grid; gap:6px; margin-top:10px;
+  }
+  .const-example b{color:var(--ink);}
+  .amendments{list-style:none; padding-left:0;}
+  .amendments li{
+    padding-left:0; border-left:2px solid var(--gold-dim); padding-left:14px; margin-bottom:14px;
+  }
+  .amend-date{
+    display:block; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--gold);
+    letter-spacing:0.05em; margin-bottom:3px;
+  }
+  .conclusion{text-align:center; padding-top:26px;}
+  .conclusion p{font-family:'Oswald',sans-serif; font-size:16px; font-style:italic; color:var(--ink);}
+
+  footer{max-width:1180px; margin:0 auto; padding:20px 24px 60px; color:var(--muted); font-size:11px; font-family:'IBM Plex Mono',monospace;}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} }
+</style>
+</head>
+<body>
+
+<header class="charter">
+  <div class="charter-inner">
+    <div class="charter-title-row">
+      <div class="seal">CW</div>
+      <div>
+        <div class="eyebrow">Office of the Supreme Commissioner · Est. 2013</div>
+        <h1 class="display">Circle the Wagons</h1>
+      </div>
+    </div>
+    <div class="charter-meta">
+      Premier &amp; Non-Premier. One Union.<br>
+      <span id="season-label">Season <b>—</b></span>
+    </div>
+  </div>
+  <p class="preamble">&ldquo;We the People of the Circle the Wagons Fantasy Football League, in Order to form a more perfect Union, establish Justice, insure domestic Tranquility, insure paying of fantasy football fees prior to the first game, promote shit-talking and banter amongst members, and secure the Blessings of Liberty to ourselves and our Posterity&hellip;&rdquo;</p>
+  <nav class="tabs">
+    <button class="tab active" data-view="standings">Standings</button>
+    <button class="tab" data-view="rosters">Rosters</button>
+    <button class="tab" data-view="matchups">Matchups</button>
+    <button class="tab" data-view="bowl">Bowl Game</button>
+    <button class="tab" data-view="power">Power Rankings</button>
+    <button class="tab" data-view="grades">Draft Grades</button>
+    <button class="tab" data-view="forecast">Forecasts</button>
+    <button class="tab" data-view="dues">Dues</button>
+    <button class="tab" data-view="constitution">Constitution</button>
+    <button class="tab" data-view="champions">Champions</button>
+    <button class="tab" data-view="setup">Setup</button>
+  </nav>
+</header>
+
+<main>
+  <div class="panel">
+
+    <!-- CONSTITUTION -->
+    <section class="view" id="view-constitution">
+      <h2 class="section-title">The Constitution</h2>
+      <p class="section-sub">Est. 2013 · Drafted 8/26/2024 · Amended 8/6/2025 · Amended 8/7/2026 · Amended 8/25/2026</p>
+
+      <div class="const-block">
+        <h3 class="const-h">Article I — Recognition of One Union</h3>
+        <p>All legislative, judicial, and executive powers are vested in the <b>Supreme Commissioner of Fantasy Football Operations, Chris Gozzano</b>. The Circle the Wagons Fantasy Football League has operated as one union since 2013.</p>
+      </div>
+
+      <div class="const-block">
+        <h3 class="const-h">Two Leagues, One Union</h3>
+        <p>Since 2024, the league has operated as two distinct-but-equal divisions of eight members each: the <b>Premier League</b> and the <b>Non-Premier League</b>. Each division runs its own draft, position allocation, point system, and playoff structure — independently agreed to by its own participating members.</p>
+      </div>
+
+      <div class="const-block">
+        <h3 class="const-h">Promotion &amp; Relegation</h3>
+        <p>At the close of each season, standings determine movement between divisions:</p>
+        <ul class="const-list">
+          <li>The <b>top 4 finishers</b> of the Non-Premier League (per playoff final standings) are promoted to the Premier League for the following year.</li>
+          <li>The <b>bottom 4 finishers</b> of the Premier League are relegated to the Non-Premier League for the following year.</li>
+        </ul>
+        <p class="const-note">Amended 8/7/2026, by order of the Supreme Commissioner — the original rule promoted/relegated only the top/bottom 2 teams; it now applies to the top/bottom 4.</p>
+      </div>
+
+      <div class="const-block">
+        <h3 class="const-h">Contributions &amp; Payouts</h3>
+        <p>The league-wide minimum contribution is <b>$50 USD</b> per member. Lowering the fee requires unanimous (100%) agreement across all participating members; raising it is negotiated within each division.</p>
+        <p>To honor the standard of play in the top flight, <b>25% of all Non-Premier League contributions</b> is remitted to the Premier League's payout pot — the remaining 75% stays within the Non-Premier League, distributed per that division's own agreed structure.</p>
+        <div class="const-example">
+          <div><span class="mono">Non-Premier:</span> $50 × 8 members = $400 − $100 remitted = <b>$300</b> pot</div>
+          <div><span class="mono">Premier:</span> $50 × 8 members = $400 + $100 received = <b>$500</b> pot</div>
+        </div>
+      </div>
+
+      <div class="const-block">
+        <h3 class="const-h">Amendments</h3>
+        <ul class="const-list amendments">
+          <li><span class="amend-date">8/8/2025</span> Commissioner vacancies (Premier or Non-Premier) open a 24-hour volunteer window; if none is resolved, the Supreme Commissioner appoints a successor. All decisions are final.</li>
+          <li><span class="amend-date">8/7/2026</span> Nelson was unilaterally removed from the league, replaced by Chris Braunger. Any complaints from Nelson are directed to Nate, Conor, and Poundo.</li>
+          <li><span class="amend-date">8/25/2026</span> The creation of the Fantasy Super Bowl is hereby approved. In addition to the existing $50 minimum contribution, each league participant shall pay a bonus of $10 USD, which will fund the bounty awarded to the Fantasy Super Bowl (FSB) Champion.</li>
+        </ul>
+      </div>
+
+      <div class="const-block conclusion">
+        <p>"These are the rules, and may the odds ever be in your favor."</p>
+        <p class="mono" style="color:var(--muted);font-size:11px;">— God Bless the Circle the Wagons Fantasy Football League (Est. 2013)</p>
+      </div>
+    </section>
+
+    <!-- CHAMPIONS -->
+    <section class="view" id="view-champions">
+      <h2 class="section-title">The Illustrious List of Champions</h2>
+      <p class="section-sub">Every crowned champion of the Union, since the beginning.</p>
+      <div class="champ-list" id="champ-list"></div>
+    </section>
+
+    <!-- SETUP -->
+    <section class="view" id="view-setup">
+      <h2 class="section-title">League Charter Setup</h2>
+      <p class="section-sub">Both leagues are pre-configured for every visitor — you don't need to enter anything here. This tab only matters if the league IDs change in a future season, or if you personally want to point your own browser at different leagues (saved locally, only for you).</p>
+      <div class="setup-grid">
+        <div class="field">
+          <label for="league1id">Premier League — League ID</label>
+          <input id="league1id" placeholder="e.g. 1183123456789012345">
+        </div>
+        <div class="field">
+          <label for="league2id">Non-Premier League — League ID</label>
+          <input id="league2id" placeholder="e.g. 1183123456789012999">
+        </div>
+        <div class="field">
+          <label for="league1name">Premier League — Display Name</label>
+          <input id="league1name" placeholder="Premier League">
+        </div>
+        <div class="field">
+          <label for="league2name">Non-Premier — Display Name</label>
+          <input id="league2name" placeholder="Non-Premier League">
+        </div>
+      </div>
+      <button class="btn" id="save-setup">Save &amp; Load League Data</button>
+      <p class="hint">
+        Don't have your League IDs yet? In a browser, visit
+        <code>https://api.sleeper.app/v1/user/&lt;your_username&gt;/leagues/nfl/2026</code>
+        and copy the <code>league_id</code> field for each league from the JSON response.
+      </p>
+    </section>
+
+    <!-- STANDINGS -->
+    <section class="view active" id="view-standings">
+      <h2 class="section-title">League Standings</h2>
+      <p class="section-sub">Ranked by wins, then total points for. Updates automatically once matchups begin.</p>
+      <div class="divisions" id="standings-container">
+        <div class="empty">Enter your League IDs in the Setup tab to load standings.</div>
+      </div>
+    </section>
+
+    <!-- ROSTERS -->
+    <section class="view" id="view-rosters">
+      <h2 class="section-title">Rosters</h2>
+      <p class="section-sub">Full team rosters across both divisions. Will populate after each league's draft.</p>
+      <div id="rosters-container"><div class="empty">Enter your League IDs in the Setup tab to load rosters.</div></div>
+    </section>
+
+    <!-- MATCHUPS -->
+    <section class="view" id="view-matchups">
+      <h2 class="section-title">Weekly Matchups</h2>
+      <p class="section-sub">Head-to-head results by division, week by week.</p>
+      <div class="week-picker">
+        <label for="week-select" class="mono" style="font-size:12px;color:var(--muted);">WEEK</label>
+        <select id="week-select"></select>
+      </div>
+      <div id="matchups-container"><div class="empty">Enter your League IDs in the Setup tab to load matchups.</div></div>
+    </section>
+
+    <!-- BOWL GAME -->
+    <section class="view" id="view-bowl">
+      <div class="bowl-hero">
+        <div class="eyebrow">End of Season Championship</div>
+        <h2 class="display">The Circle the Wagons Bowl</h2>
+      </div>
+      <div class="bowl-board">
+        <div class="bowl-team elite">
+          <div class="crest">P</div>
+          <div class="label">Premier Champion</div>
+          <select id="bowl-team1"><option>Load a division first</option></select>
+        </div>
+        <div class="bowl-vs">VS</div>
+        <div class="bowl-team tier2">
+          <div class="crest">N</div>
+          <div class="label">Non-Premier Champion</div>
+          <select id="bowl-team2"><option>Load a division first</option></select>
+        </div>
+      </div>
+      <div class="bowl-score-row">
+        <div class="field">
+          <label class="mono" style="font-size:11px;color:var(--muted);display:block;text-align:center;margin-bottom:6px;">FINAL SCORE</label>
+          <input id="bowl-score1" type="number" step="0.1" placeholder="0.0">
+        </div>
+        <div class="field">
+          <label class="mono" style="font-size:11px;color:var(--muted);display:block;text-align:center;margin-bottom:6px;">FINAL SCORE</label>
+          <input id="bowl-score2" type="number" step="0.1" placeholder="0.0">
+        </div>
+      </div>
+      <div style="text-align:center;">
+        <button class="btn secondary" id="bowl-compute">Crown The Champion</button>
+      </div>
+      <div class="bowl-result" id="bowl-result">Enter both scores from your exhibition week to see the result here.</div>
+      <p class="hint" style="text-align:center;max-width:520px;margin:18px auto 0;">
+        Scores are entered manually since the two divisions run as independent Sleeper leagues — run your agreed exhibition week (e.g. Week 18) under matching scoring settings, then record the final totals here.
+      </p>
+    </section>
+
+    <!-- POWER RANKINGS -->
+    <section class="view" id="view-power">
+      <h2 class="section-title">Union-Wide Power Rankings</h2>
+      <p class="section-sub">All 16 teams, ranked 1&ndash;16 across both divisions on a single scale.</p>
+
+      <div class="pr-methodology">
+        <button class="pr-toggle" id="pr-methodology-toggle">How this is calculated ▾</button>
+        <div class="pr-methodology-body" id="pr-methodology-body">
+          <p>Each team gets a <b>Power Score</b> built from four weighted components, then all 16 teams are ranked on that single score:</p>
+          <ul class="const-list">
+            <li><b>Win % (30%)</b> &mdash; naturally comparable across leagues since it's just a 0&ndash;1 record.</li>
+            <li><b>Points For (25%)</b> &mdash; normalized against your own league's average, so different scoring settings between divisions don't skew the comparison.</li>
+            <li><b>Point Differential (20%)</b> &mdash; also normalized within your own league; rewards blowouts over squeakers.</li>
+            <li><b>Strength-of-Schedule Score (25%)</b> &mdash; each win is credited based on how good that week's opponent was; each loss is penalized based on how bad that opponent was. Beating a 7-1 team counts more than beating a 1-7 team.</li>
+          </ul>
+          <p class="const-note">This updates automatically as the season progresses and more weeks are played. Early-season rankings will swing more since there's less data to smooth things out.</p>
+        </div>
+      </div>
+
+      <div id="power-container"><div class="empty">Enter your League IDs in the Setup tab to calculate Power Rankings.</div></div>
+    </section>
+
+    <!-- DRAFT GRADES -->
+    <section class="view" id="view-grades">
+      <h2 class="section-title">Draft Grades</h2>
+      <p class="section-sub">AI-generated grades via LeagueLogs, team by team. Click any card to expand.</p>
+
+      <div class="divisions grades-divisions">
+        <div class="division">
+          <div class="division-head elite">Premier League</div>
+          <div class="grade-list" id="grades-premier"></div>
+        </div>
+        <div class="division">
+          <div class="division-head tier2">Non-Premier League</div>
+          <div class="grade-list" id="grades-nonpremier"></div>
+        </div>
+      </div>
+
+      <p class="hint" style="text-align:center;margin-top:22px;">
+        Full breakdowns (including per-pick analysis) live on LeagueLogs:
+        <a href="https://leaguelogs.com/fantasy-football-ai/draft-analyzer/1391483291600707584" target="_blank" rel="noopener" class="const-link">Premier League Draft Analyzer</a>
+        &nbsp;·&nbsp;
+        <a href="https://leaguelogs.com/fantasy-football-ai/draft-analyzer/1394761037001027584" target="_blank" rel="noopener" class="const-link">Non-Premier League Draft Analyzer</a>
+      </p>
+    </section>
+
+    <!-- FORECASTS -->
+    <section class="view" id="view-forecast">
+      <h2 class="section-title">Forecasted Winners &amp; Losers</h2>
+      <p class="section-sub" id="forecast-week-label">Statistical projections for the upcoming week, both divisions.</p>
+
+      <div class="pr-methodology">
+        <button class="pr-toggle" id="forecast-methodology-toggle">How this is calculated ▾</button>
+        <div class="pr-methodology-body" id="forecast-methodology-body">
+          <p><b>Important honesty note:</b> Sleeper's public API doesn't expose real player-level projections (injuries, matchup difficulty, weather, etc.) &mdash; that data isn't part of their free API. This is a <b>statistical</b> forecast, not a true player-projection model.</p>
+          <p>For each team, it takes their <b>season scoring average</b> (points for &divide; games played) as their projected score for the upcoming matchup. The projected winner is simply whoever's average is higher for that pairing.</p>
+          <p><b>Win probability</b> is calculated from the projected point gap between the two teams, scaled against how consistent scoring has been across their whole division this season &mdash; a small gap between two high-variance leagues produces a closer probability than the same gap in a low-variance one.</p>
+          <p class="const-note">Treat this as "who the numbers favor," not a guarantee &mdash; any given week, a cold streak or a boom game can flip it entirely. It also gets more reliable as more weeks of data pile up; early-season forecasts are closer to a coin flip by nature.</p>
+        </div>
+      </div>
+
+      <div id="forecast-container"><div class="empty">Forecasts will populate once League IDs are configured and at least one week has been played.</div></div>
+    </section>
+
+    <!-- DUES -->
+    <section class="view" id="view-dues">
+      <h2 class="section-title">League Dues</h2>
+      <p class="section-sub">Per the Constitution: $50 base contribution + $10 Fantasy Super Bowl bonus = <b>$60 total per person</b>.</p>
+
+      <div class="dues-summary" id="dues-summary"></div>
+
+      <div class="divisions">
+        <div class="division">
+          <div class="division-head elite">Elite Super League</div>
+          <div class="dues-list" id="dues-premier"></div>
+        </div>
+        <div class="division">
+          <div class="division-head tier2">Retard League</div>
+          <div class="dues-list" id="dues-nonpremier"></div>
+        </div>
+      </div>
+
+      <p class="hint" style="margin-top:18px;">
+        This list is maintained by hand, not connected to any payment processor. To mark someone paid, the Supreme Commissioner edits the <code>DUES</code> list in <code>index.html</code> and flips their entry to <code>paid: true</code>, then commits the change.
+      </p>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  CIRCLE THE WAGONS FANTASY FOOTBALL LEAGUE — EST. 2013 — POWERED BY THE SLEEPER API — READ-ONLY, NO LOGIN REQUIRED
+</footer>
+
+<script>
+const API = "https://api.sleeper.app/v1";
+const SEASON = "2026";
+
+// Hardcoded league IDs — set once, so the site works for every visitor without
+// anyone needing to type these in on their own browser. Update these two lines
+// each new season when Sleeper issues fresh league IDs.
+const DEFAULT_LEAGUE_1 = { id: "1391483290392739840", name: "Elite Super League" }; // Premier tier
+const DEFAULT_LEAGUE_2 = { id: "1394761035767910400", name: "Retard League" };      // Non-Premier tier
+
+let state = {
+  league1: { id: DEFAULT_LEAGUE_1.id, name: DEFAULT_LEAGUE_1.name, rosters:[], users:[] },
+  league2: { id: DEFAULT_LEAGUE_2.id, name: DEFAULT_LEAGUE_2.name, rosters:[], users:[] },
+  players: null,
+};
+
+// ---------- persistence ----------
+function loadConfig(){
+  const c = JSON.parse(localStorage.getItem('supremeLeagueConfig') || '{}');
+  const l1id = c.league1id || DEFAULT_LEAGUE_1.id;
+  const l2id = c.league2id || DEFAULT_LEAGUE_2.id;
+  const l1name = c.league1name || DEFAULT_LEAGUE_1.name;
+  const l2name = c.league2name || DEFAULT_LEAGUE_2.name;
+  document.getElementById('league1id').value = l1id;
+  document.getElementById('league2id').value = l2id;
+  document.getElementById('league1name').value = l1name;
+  document.getElementById('league2name').value = l2name;
+  state.league1.id = l1id; state.league1.name = l1name;
+  state.league2.id = l2id; state.league2.name = l2name;
+  return true; // always configured now, thanks to the hardcoded defaults above
+}
+function saveConfig(){
+  const c = {
+    league1id: document.getElementById('league1id').value.trim() || DEFAULT_LEAGUE_1.id,
+    league2id: document.getElementById('league2id').value.trim() || DEFAULT_LEAGUE_2.id,
+    league1name: document.getElementById('league1name').value.trim() || DEFAULT_LEAGUE_1.name,
+    league2name: document.getElementById('league2name').value.trim() || DEFAULT_LEAGUE_2.name,
+  };
+  localStorage.setItem('supremeLeagueConfig', JSON.stringify(c));
+  state.league1.id = c.league1id; state.league1.name = c.league1name;
+  state.league2.id = c.league2id; state.league2.name = c.league2name;
+}
+
+// ---------- tabs ----------
+document.querySelectorAll('.tab').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('view-'+btn.dataset.view).classList.add('active');
+  });
+});
+
+// ---------- API helpers ----------
+async function getJSON(url){
+  const res = await fetch(url);
+  if(!res.ok) throw new Error('Request failed: '+url);
+  return res.json();
+}
+async function loadLeague(div){
+  if(!div.id) return;
+  const [rosters, users] = await Promise.all([
+    getJSON(`${API}/league/${div.id}/rosters`),
+    getJSON(`${API}/league/${div.id}/users`),
+  ]);
+  div.rosters = rosters;
+  div.users = users;
+}
+async function loadPlayersOnce(){
+  if(state.players) return state.players;
+  const cached = sessionStorage.getItem('slPlayers');
+  if(cached){ state.players = JSON.parse(cached); return state.players; }
+  const data = await getJSON(`${API}/players/nfl`);
+  state.players = data;
+  try{ sessionStorage.setItem('slPlayers', JSON.stringify(data)); }catch(e){ /* too large for storage, skip cache */ }
+  return data;
+}
+function ownerName(div, ownerId){
+  const u = div.users.find(u=>u.user_id===ownerId);
+  return u ? (u.metadata && u.metadata.team_name ? u.metadata.team_name : u.display_name) : 'Unclaimed';
+}
+
+// ---------- Standings ----------
+function renderStandingsTable(div, className, label){
+  const rows = [...div.rosters].sort((a,b)=>{
+    const aw=a.settings?.wins||0, bw=b.settings?.wins||0;
+    if(bw!==aw) return bw-aw;
+    const apf = (a.settings?.fpts||0)+(a.settings?.fpts_decimal||0)/100;
+    const bpf = (b.settings?.fpts||0)+(b.settings?.fpts_decimal||0)/100;
+    return bpf-apf;
+  });
+  let html = `<div class="division"><div class="division-head ${className}">${label}</div><table>
+    <thead><tr><th></th><th>Team</th><th>W</th><th>L</th><th>PF</th></tr></thead><tbody>`;
+  rows.forEach((r,i)=>{
+    const pf = ((r.settings?.fpts||0)+(r.settings?.fpts_decimal||0)/100).toFixed(1);
+    html += `<tr><td class="rank">${i+1}</td><td class="team-name">${ownerName(div,r.owner_id)}</td>
+      <td>${r.settings?.wins||0}</td><td>${r.settings?.losses||0}</td><td>${pf}</td></tr>`;
+  });
+  if(rows.length===0) html += `<tr><td colspan="5" class="empty">No rosters yet — check back after the draft.</td></tr>`;
+  html += `</tbody></table></div>`;
+  return html;
+}
+async function renderStandings(){
+  const container = document.getElementById('standings-container');
+  container.innerHTML = '<div class="loading">Loading standings…</div>';
+  try{
+    await Promise.all([loadLeague(state.league1), loadLeague(state.league2)]);
+    container.innerHTML =
+      renderStandingsTable(state.league1, 'elite', state.league1.name) +
+      renderStandingsTable(state.league2, 'tier2', state.league2.name);
+    populateBowlSelectors();
+  }catch(e){
+    container.innerHTML = `<div class="empty">Couldn't load league data. Double-check both League IDs in the Setup tab, and confirm this page is being viewed at a real http(s) address (not opened directly as a local file) — Sleeper's API blocks requests from file:// pages.</div>`;
+  }
+}
+
+// ---------- Rosters ----------
+async function renderRosters(){
+  const container = document.getElementById('rosters-container');
+  container.innerHTML = '<div class="loading">Loading rosters and player data (first load can take a moment)…</div>';
+  let players;
+  try{
+    await Promise.all([loadLeague(state.league1), loadLeague(state.league2)]);
+    players = await loadPlayersOnce();
+  }catch(e){
+    container.innerHTML = `<div class="empty">Couldn't load roster data. Check your League IDs in Setup and make sure this page is hosted at a real http(s) address.</div>`;
+    return;
+  }
+
+  function block(div, label, cls){
+    let html = `<h3 class="display" style="font-size:16px;color:var(--${cls==='elite'?'gold':'steel'});margin:22px 0 4px;">${label}</h3><div class="roster-teams">`;
+    div.rosters.forEach(r=>{
+      html += `<div class="roster-card"><h4>${ownerName(div,r.owner_id)}</h4>`;
+      const owner = div.users.find(u=>u.user_id===r.owner_id);
+      html += `<div class="owner">@${owner?owner.username:'—'}</div>`;
+      const plist = (r.players||[]).map(pid=>{
+        const p = players[pid];
+        if(!p) return `<div class="player-row"><span>${pid}</span></div>`;
+        return `<div class="player-row"><span><span class="pos">${p.position||'—'}</span>${p.first_name||''} ${p.last_name||pid}</span><span style="color:var(--muted);">${p.team||'FA'}</span></div>`;
+      }).join('') || `<div class="empty" style="padding:10px 0;">No players drafted yet.</div>`;
+      html += plist + `</div>`;
+    });
+    html += `</div>`;
+    return html;
+  }
+  container.innerHTML = block(state.league1, state.league1.name, 'elite') + block(state.league2, state.league2.name, 'tier2');
+}
+
+// ---------- Matchups ----------
+async function renderMatchups(week){
+  const container = document.getElementById('matchups-container');
+  container.innerHTML = '<div class="loading">Loading matchups…</div>';
+  let m1, m2;
+  try{
+    await Promise.all([loadLeague(state.league1), loadLeague(state.league2)]);
+    [m1, m2] = await Promise.all([
+      getJSON(`${API}/league/${state.league1.id}/matchups/${week}`),
+      getJSON(`${API}/league/${state.league2.id}/matchups/${week}`),
+    ]);
+  }catch(e){
+    container.innerHTML = `<div class="empty">Couldn't load matchups. Check your League IDs in Setup, or this week may not have matchups yet.</div>`;
+    return;
+  }
+  function pairUp(matchups){
+    const groups = {};
+    matchups.forEach(m=>{ (groups[m.matchup_id] = groups[m.matchup_id]||[]).push(m); });
+    return Object.values(groups);
+  }
+  function block(div, matchups, label){
+    const pairs = pairUp(matchups);
+    let html = `<h3 class="display" style="font-size:16px;margin:20px 0 10px;">${label}</h3><div class="matchup-list">`;
+    if(pairs.length===0) html += `<div class="empty">No matchups posted for this week yet.</div>`;
+    pairs.forEach(p=>{
+      const [a,b] = p;
+      if(!a || !b) return;
+      const aWin = (a.points||0) >= (b.points||0);
+      html += `<div class="matchup">
+        <div class="side ${aWin?'win':''}"><span class="score">${(a.points||0).toFixed(1)}</span><span>${ownerName(div, div.rosters.find(r=>r.roster_id===a.roster_id)?.owner_id)}</span></div>
+        <div class="vs">WK ${week}</div>
+        <div class="side right ${!aWin?'win':''}"><span class="score">${(b.points||0).toFixed(1)}</span><span>${ownerName(div, div.rosters.find(r=>r.roster_id===b.roster_id)?.owner_id)}</span></div>
+      </div>`;
+    });
+    html += `</div>`;
+    return html;
+  }
+  container.innerHTML = block(state.league1, m1, state.league1.name) + block(state.league2, m2, state.league2.name);
+}
+function setupWeekPicker(){
+  const sel = document.getElementById('week-select');
+  sel.innerHTML='';
+  for(let w=1; w<=18; w++){
+    const opt = document.createElement('option'); opt.value=w; opt.textContent='Week '+w;
+    sel.appendChild(opt);
+  }
+  sel.addEventListener('change', ()=>renderMatchups(sel.value));
+}
+
+// ---------- Power Rankings ----------
+document.getElementById('pr-methodology-toggle').addEventListener('click', ()=>{
+  const body = document.getElementById('pr-methodology-body');
+  const btn = document.getElementById('pr-methodology-toggle');
+  body.classList.toggle('open');
+  btn.textContent = body.classList.contains('open') ? 'How this is calculated ▴' : 'How this is calculated ▾';
+});
+
+function mean(arr){ return arr.reduce((a,b)=>a+b,0) / (arr.length||1); }
+function stdev(arr){
+  const m = mean(arr);
+  const variance = mean(arr.map(x=>(x-m)*(x-m)));
+  return Math.sqrt(variance) || 1; // avoid divide-by-zero
+}
+function zscore(val, arr){ return (val - mean(arr)) / stdev(arr); }
+
+async function fetchSeasonMatchups(leagueId, throughWeek){
+  const weeks = [];
+  for(let w=1; w<=throughWeek; w++) weeks.push(w);
+  const results = await Promise.all(weeks.map(w =>
+    getJSON(`${API}/league/${leagueId}/matchups/${w}`).then(data => ({week:w, data})).catch(()=>({week:w, data:[]}))
+  ));
+  return results;
+}
+
+async function renderPowerRankings(){
+  const container = document.getElementById('power-container');
+  container.innerHTML = '<div class="loading">Crunching the numbers across both divisions…</div>';
+  try{
+    await Promise.all([loadLeague(state.league1), loadLeague(state.league2)]);
+    const nflState = await getJSON(`${API}/state/nfl`).catch(()=>({week:1}));
+    const throughWeek = Math.max(1, (nflState.week || 1) - 1);
+
+    async function buildTeams(div, tagClass){
+      if(div.rosters.length === 0) return [];
+      const weekly = await fetchSeasonMatchups(div.id, throughWeek);
+      // roster_id -> {wins, losses, pf, pa, opponentsFaced: [{result, oppRosterId}]}
+      const byRoster = {};
+      div.rosters.forEach(r=>{
+        byRoster[r.roster_id] = {
+          roster_id: r.roster_id,
+          name: ownerName(div, r.owner_id),
+          wins: r.settings?.wins||0,
+          losses: r.settings?.losses||0,
+          pf: (r.settings?.fpts||0) + (r.settings?.fpts_decimal||0)/100,
+          pa: (r.settings?.fpts_against||0) + (r.settings?.fpts_against_decimal||0)/100,
+          games: [],
+        };
+      });
+      weekly.forEach(({data})=>{
+        const groups = {};
+        (data||[]).forEach(m=>{ (groups[m.matchup_id]=groups[m.matchup_id]||[]).push(m); });
+        Object.values(groups).forEach(pair=>{
+          if(pair.length<2) return;
+          const [a,b] = pair;
+          if(!byRoster[a.roster_id] || !byRoster[b.roster_id]) return;
+          if((a.points||0)===0 && (b.points||0)===0) return; // week not played yet
+          const aWin = (a.points||0) > (b.points||0);
+          byRoster[a.roster_id].games.push({opp:b.roster_id, win:aWin});
+          byRoster[b.roster_id].games.push({opp:a.roster_id, win:!aWin});
+        });
+      });
+      const teams = Object.values(byRoster);
+      // win% for SOS lookups
+      teams.forEach(t=>{ t.winPct = (t.wins+t.losses)>0 ? t.wins/(t.wins+t.losses) : 0; });
+      const winPctById = {}; teams.forEach(t=>winPctById[t.roster_id]=t.winPct);
+      // SOS-adjusted score
+      teams.forEach(t=>{
+        let sos = 0;
+        t.games.forEach(g=>{
+          const oppWinPct = winPctById[g.opp] ?? 0.5;
+          sos += g.win ? oppWinPct : -(1-oppWinPct);
+        });
+        t.sos = sos;
+        t.diff = t.pf - t.pa;
+        t.league = div.name;
+        t.tagClass = tagClass;
+      });
+      // within-league z-scores for PF and diff
+      const pfArr = teams.map(t=>t.pf), diffArr = teams.map(t=>t.diff);
+      teams.forEach(t=>{
+        t.pfZ = zscore(t.pf, pfArr);
+        t.diffZ = zscore(t.diff, diffArr);
+      });
+      return teams;
+    }
+
+    const [t1, t2] = await Promise.all([
+      buildTeams(state.league1, 'elite'),
+      buildTeams(state.league2, 'tier2'),
+    ]);
+    const all = [...t1, ...t2];
+    if(all.length === 0){
+      container.innerHTML = `<div class="empty">No rosters yet — Power Rankings will populate after the draft and first games.</div>`;
+      return;
+    }
+    // cross-league components: win% and SOS get z-scored across the full 16-team pool
+    const winPctArr = all.map(t=>t.winPct), sosArr = all.map(t=>t.sos);
+    all.forEach(t=>{
+      t.winPctZ = zscore(t.winPct, winPctArr);
+      t.sosZ = zscore(t.sos, sosArr);
+      t.power = (0.30*t.winPctZ) + (0.25*t.pfZ) + (0.20*t.diffZ) + (0.25*t.sosZ);
+    });
+    all.sort((a,b)=>b.power-a.power);
+
+    let html = `<div class="pr-list">
+      <div class="pr-row head"><div>#</div><div>Team</div><div class="pr-stat">Rec</div><div class="pr-stat">PF</div><div class="pr-stat">Diff</div><div class="pr-stat">Score</div></div>`;
+    all.forEach((t,i)=>{
+      html += `<div class="pr-row">
+        <div class="pr-rank">${i+1}</div>
+        <div class="pr-team">${t.name}<span class="pr-league-tag ${t.tagClass}">${t.league}</span></div>
+        <div class="pr-stat">${t.wins}-${t.losses}</div>
+        <div class="pr-stat">${t.pf.toFixed(1)}</div>
+        <div class="pr-stat">${t.diff>=0?'+':''}${t.diff.toFixed(1)}</div>
+        <div class="pr-score">${t.power.toFixed(2)}</div>
+      </div>`;
+    });
+    html += `</div>`;
+    container.innerHTML = html;
+  }catch(e){
+    container.innerHTML = `<div class="empty">Couldn't calculate Power Rankings. Check your League IDs in Setup, or make sure this page is hosted at a real http(s) address.</div>`;
+  }
+}
+
+// ---------- Forecasts ----------
+document.getElementById('forecast-methodology-toggle').addEventListener('click', ()=>{
+  const body = document.getElementById('forecast-methodology-body');
+  const btn = document.getElementById('forecast-methodology-toggle');
+  body.classList.toggle('open');
+  btn.textContent = body.classList.contains('open') ? 'How this is calculated ▴' : 'How this is calculated ▾';
+});
+
+function winProbability(avgA, avgB, leagueStdev){
+  const gap = avgA - avgB;
+  const scale = (leagueStdev || 1) * 1.4; // spread the logistic curve across typical week-to-week variance
+  const prob = 1 / (1 + Math.pow(10, -gap/scale));
+  return Math.min(0.95, Math.max(0.05, prob)); // clamp — never claim over 95% certainty
+}
+
+async function renderForecast(){
+  const container = document.getElementById('forecast-container');
+  const weekLabel = document.getElementById('forecast-week-label');
+  container.innerHTML = '<div class="loading">Pulling upcoming matchups and season scoring data…</div>';
+  try{
+    await Promise.all([loadLeague(state.league1), loadLeague(state.league2)]);
+    const nflState = await getJSON(`${API}/state/nfl`).catch(()=>({week:1}));
+    const week = nflState.week || 1;
+    weekLabel.textContent = `Statistical projections for Week ${week}, both divisions.`;
+
+    async function block(div, tagClass){
+      if(div.rosters.length === 0) return `<h3 class="fc-league-h">${div.name}</h3><div class="empty">No rosters yet.</div>`;
+      const matchups = await getJSON(`${API}/league/${div.id}/matchups/${week}`).catch(()=>[]);
+      const groups = {};
+      (matchups||[]).forEach(m=>{ (groups[m.matchup_id]=groups[m.matchup_id]||[]).push(m); });
+      const pairs = Object.values(groups).filter(p=>p.length===2);
+
+      // build per-roster scoring average from completed games
+      const avgByRoster = {};
+      div.rosters.forEach(r=>{
+        const games = (r.settings?.wins||0) + (r.settings?.losses||0) + (r.settings?.ties||0);
+        const pf = (r.settings?.fpts||0) + (r.settings?.fpts_decimal||0)/100;
+        avgByRoster[r.roster_id] = games > 0 ? pf/games : null;
+      });
+      const knownAverages = Object.values(avgByRoster).filter(v=>v!==null);
+      if(knownAverages.length < 2){
+        return `<h3 class="fc-league-h">${div.name}</h3><div class="empty">Not enough games played yet to forecast this division.</div>`;
+      }
+      const leagueStdev = stdev(knownAverages);
+
+      let html = `<h3 class="fc-league-h">${div.name}</h3><div class="fc-list">`;
+      if(pairs.length===0){
+        html += `<div class="empty">No matchups posted for Week ${week} yet.</div>`;
+      }
+      pairs.forEach(p=>{
+        const [a,b] = p;
+        const rosterA = div.rosters.find(r=>r.roster_id===a.roster_id);
+        const rosterB = div.rosters.find(r=>r.roster_id===b.roster_id);
+        if(!rosterA || !rosterB) return;
+        const avgA = avgByRoster[a.roster_id], avgB = avgByRoster[b.roster_id];
+        if(avgA===null || avgB===null){
+          html += `<div class="fc-card"><div class="fc-side"><span class="fc-team">${ownerName(div,rosterA.owner_id)}</span></div><div class="fc-mid">VS</div><div class="fc-side right"><span class="fc-team">${ownerName(div,rosterB.owner_id)}</span></div></div>`;
+          return;
+        }
+        const probA = winProbability(avgA, avgB, leagueStdev);
+        const aFav = probA >= 0.5;
+        html += `<div class="fc-card">
+          <div class="fc-side ${aFav?'fc-favorite':''}">
+            <span class="fc-team">${ownerName(div,rosterA.owner_id)}</span>
+            <span class="fc-proj">proj. ${avgA.toFixed(1)} pts</span>
+            ${aFav ? `<span class="fc-pct">${Math.round(probA*100)}% favored</span>` : ''}
+          </div>
+          <div class="fc-mid">WK ${week}<br>VS</div>
+          <div class="fc-side right ${!aFav?'fc-favorite':''}">
+            <span class="fc-team">${ownerName(div,rosterB.owner_id)}</span>
+            <span class="fc-proj">proj. ${avgB.toFixed(1)} pts</span>
+            ${!aFav ? `<span class="fc-pct">${Math.round((1-probA)*100)}% favored</span>` : ''}
+          </div>
+        </div>`;
+      });
+      html += `</div>`;
+      return html;
+    }
+
+    const [h1, h2] = await Promise.all([block(state.league1,'elite'), block(state.league2,'tier2')]);
+    container.innerHTML = h1 + h2;
+  }catch(e){
+    container.innerHTML = `<div class="empty">Couldn't build forecasts. Check League IDs in Setup, or the upcoming week's matchups may not be posted yet.</div>`;
+  }
+}
+
+// ---------- Bowl Game ----------
+function populateBowlSelectors(){
+  const sel1 = document.getElementById('bowl-team1');
+  const sel2 = document.getElementById('bowl-team2');
+  sel1.innerHTML=''; sel2.innerHTML='';
+  state.league1.rosters.forEach(r=>{
+    const opt = document.createElement('option'); opt.value=r.roster_id; opt.textContent=ownerName(state.league1,r.owner_id);
+    sel1.appendChild(opt);
+  });
+  state.league2.rosters.forEach(r=>{
+    const opt = document.createElement('option'); opt.value=r.roster_id; opt.textContent=ownerName(state.league2,r.owner_id);
+    sel2.appendChild(opt);
+  });
+}
+document.getElementById('bowl-compute').addEventListener('click', ()=>{
+  const s1 = parseFloat(document.getElementById('bowl-score1').value);
+  const s2 = parseFloat(document.getElementById('bowl-score2').value);
+  const t1 = document.getElementById('bowl-team1').selectedOptions[0]?.textContent || 'Premier Champion';
+  const t2 = document.getElementById('bowl-team2').selectedOptions[0]?.textContent || 'Non-Premier Champion';
+  const result = document.getElementById('bowl-result');
+  if(isNaN(s1) || isNaN(s2)){
+    result.textContent = 'Enter both final scores to crown a champion.';
+    result.classList.remove('decided');
+    return;
+  }
+  if(s1===s2){
+    result.textContent = `It's a dead heat — ${s1.toFixed(1)} to ${s2.toFixed(1)}. Break the tie however your charter demands.`;
+  } else {
+    const winner = s1>s2 ? t1 : t2;
+    const wScore = Math.max(s1,s2).toFixed(1), lScore = Math.min(s1,s2).toFixed(1);
+    result.textContent = `👑 ${winner} wins the Circle the Wagons Bowl, ${wScore} – ${lScore}.`;
+  }
+  result.classList.add('decided');
+});
+
+// ---------- Setup ----------
+document.getElementById('save-setup').addEventListener('click', async ()=>{
+  saveConfig();
+  document.getElementById('season-label').innerHTML = `Season <b>${SEASON}</b>`;
+  document.querySelector('.tab[data-view="standings"]').click();
+  await renderStandings();
+});
+
+// ---------- Champions ----------
+const CHAMPIONS = [
+  { year:2025, name:"Burke", league:"Elite B" },
+  { year:2025, name:"Giz", league:"Retards" },
+  { year:2024, name:"Wix", league:"League Chimp", note:"unconfirmed" },
+  { year:2024, name:"Nate", league:"League Wolverine" },
+  { year:2023, name:"Khalid", league:"Circle the Wagons" },
+  { year:2022, name:"Wix", league:"Circle the Wagons" },
+  { year:2021, name:"Khalid", league:"Circle the Wagons" },
+  { year:2020, name:"Craigen", league:"Circle the Wagons" },
+  { year:2019, name:"Borda", league:"Circle the Wagons" },
+  { year:2018, name:"Craigen", league:"Circle the Wagons" },
+  { year:2017, name:"Kupers", league:"Circle the Wagons" },
+  { year:2016, name:"Giz", league:"Circle the Wagons" },
+  { year:2015, name:"Saki", league:"Circle the Wagons" },
+  { year:2014, name:"Kupers", league:"Circle the Wagons" },
+];
+function renderChampions(){
+  const container = document.getElementById('champ-list');
+  container.innerHTML = CHAMPIONS.map(c => `
+    <div class="champ-row">
+      <div class="champ-year">${c.year}</div>
+      <div class="champ-name">${c.name}</div>
+      <div class="champ-league">${c.league}${c.note ? ` <span class="champ-note">(${c.note})</span>` : ''}</div>
+    </div>
+  `).join('');
+}
+
+// ---------- Draft Grades ----------
+const DRAFT_GRADES = {
+  premier: [
+    { name:"HamCandles", grade:"B+", archetype:"RB Stacker", blurb:"HamCandles built a deep RB stack, but Chase Brown is the pick that can swing this roster." },
+    { name:"Dtjohnson1003", grade:"B+", archetype:"Zero RB", blurb:"Puka and London made this a ruthless Zero RB start." },
+    { name:"BANGERTRON", grade:"B", archetype:"Balanced Builder", blurb:"BANGERTRON put together a B draft — fuller read coming shortly." },
+    { name:"gizzano", grade:"B-", archetype:"Balanced Builder", blurb:"gizzano put together a B- draft — fuller read coming shortly." },
+    { name:"cpcraigen", grade:"C+", archetype:"RB Stacker", blurb:"Four straight RBs made this a force, but cpcraigen paid too much for Achane and Walker." },
+    { name:"Fantnasty1", grade:"C+", archetype:"Middle of the Road", blurb:"Fantnasty1 put together a C+ draft — fuller read coming shortly." },
+    { name:"bellagio62", grade:"C", archetype:"Middle of the Road", blurb:"bellagio62 put together a C draft — fuller read coming shortly." },
+    { name:"Skynet3", grade:"C-", archetype:"RB Stacker", blurb:"Skynet3 built a bruising RB core, but paid a premium for Bijan and Jeanty." },
+  ],
+  nonpremier: [
+    { name:"mborda2000", grade:"A-", archetype:"Late-QB Special", blurb:"Puka Nacua at 1.06 created an intimidating weekly WR advantage." },
+    { name:"kshirzad", grade:"B+", archetype:"Elite TE", blurb:"Kshirzad built an elite WR core, then stole Brock Bowers before the TE cliff." },
+    { name:"natehughes1003", grade:"B", archetype:"Balanced Builder", blurb:"natehughes1003 put together a B draft — fuller read coming shortly." },
+    { name:"msaki2", grade:"B-", archetype:"Balanced Builder", blurb:"msaki2 put together a B- draft — fuller read coming shortly." },
+    { name:"ThreeHandedTards", grade:"C+", archetype:"Middle of the Road", blurb:"ThreeHandedTards put together a C+ draft — fuller read coming shortly." },
+    { name:"DanKStevens", grade:"C", archetype:"RB Stacker", blurb:"DanKStevens built an RB avalanche, but Garrett Wilson keeps this roster from becoming one-dimensional." },
+    { name:"ChraungeR", grade:"C", archetype:"RB Stacker", blurb:"ChraungeR built a bruising RB stack, but Chase and Nabers make this roster dangerous." },
+    { name:"FuckThisYang", grade:"C", archetype:"Risk Taker", blurb:"FuckThisYang bet big early, but Waddle in Round 6 makes this roster dangerous." },
+  ],
+};
+function gradeTier(grade){
+  if(grade.startsWith('A')) return 'tier-a';
+  if(grade.startsWith('B')) return 'tier-b';
+  return 'tier-c';
+}
+function renderDraftGrades(){
+  ['premier','nonpremier'].forEach(key=>{
+    const container = document.getElementById(key==='premier' ? 'grades-premier' : 'grades-nonpremier');
+    container.innerHTML = DRAFT_GRADES[key].map(t => `
+      <div class="grade-card">
+        <div class="grade-badge ${gradeTier(t.grade)}">${t.grade}</div>
+        <div class="grade-info">
+          <div class="grade-name-row"><span class="grade-name">${t.name}</span><span class="grade-archetype">${t.archetype}</span></div>
+          <div class="grade-blurb">${t.blurb}</div>
+        </div>
+      </div>
+    `).join('');
+  });
+}
+
+// ---------- Dues ----------
+// Maintained by hand — flip `paid` to true/false as people pay, then commit the change.
+const DUES = {
+  premier: [
+    { name:"Conor", paid:true },
+    { name:"Jimmy", paid:true },
+    { name:"Giz", paid:true },
+    { name:"Wix", paid:true },
+    { name:"Johnson", paid:true },
+    { name:"Tom", paid:true },
+    { name:"Kupers", paid:false },
+    { name:"Brendan", paid:false },
+  ],
+  nonpremier: [
+    { name:"Khalid", paid:false },
+    { name:"Nate", paid:true },
+    { name:"Dan", paid:false },
+    { name:"Borda", paid:true },
+    { name:"Kraz", paid:false },
+    { name:"Saki", paid:false },
+    { name:"Braunger", paid:false },
+    { name:"Poundo", paid:true },
+  ],
+};
+const DUES_PER_PERSON = 60; // $50 base + $10 FSB bonus, per the Constitution
+
+function renderDues(){
+  const all = [...DUES.premier, ...DUES.nonpremier];
+  const paidCount = all.filter(p=>p.paid).length;
+  const totalCount = all.length;
+  const collected = paidCount * DUES_PER_PERSON;
+  const expected = totalCount * DUES_PER_PERSON;
+
+  document.getElementById('dues-summary').innerHTML = `
+    <div class="dues-stat"><span class="num">${paidCount}/${totalCount}</span><span class="lbl">Paid</span></div>
+    <div class="dues-stat"><span class="num">$${collected}</span><span class="lbl">Collected</span></div>
+    <div class="dues-stat"><span class="num">$${expected - collected}</span><span class="lbl">Outstanding</span></div>
+  `;
+
+  function list(key){
+    return DUES[key].map(p => `
+      <div class="dues-row">
+        <span class="dues-name">${p.name}</span>
+        <span class="dues-badge ${p.paid ? 'paid' : 'unpaid'}">${p.paid ? 'Paid' : 'Not Paid'}</span>
+      </div>
+    `).join('');
+  }
+  document.getElementById('dues-premier').innerHTML = list('premier');
+  document.getElementById('dues-nonpremier').innerHTML = list('nonpremier');
+}
+
+// ---------- init ----------
+(async function init(){
+  document.getElementById('season-label').innerHTML = `Season <b>${SEASON}</b>`;
+  setupWeekPicker();
+  renderChampions();
+  renderDraftGrades();
+  renderDues();
+  const hasConfig = loadConfig();
+  if(hasConfig){
+    await renderStandings();
+    document.getElementById('week-select').dispatchEvent(new Event('change'));
+  }
+  // lazy-load other tabs on first visit
+  document.querySelector('.tab[data-view="rosters"]').addEventListener('click', ()=>{ if(state.league1.id) renderRosters(); }, {once:false});
+  document.querySelector('.tab[data-view="matchups"]').addEventListener('click', ()=>{ if(state.league1.id) renderMatchups(document.getElementById('week-select').value); }, {once:false});
+  document.querySelector('.tab[data-view="power"]').addEventListener('click', ()=>{ if(state.league1.id) renderPowerRankings(); }, {once:false});
+  document.querySelector('.tab[data-view="forecast"]').addEventListener('click', ()=>{ if(state.league1.id) renderForecast(); }, {once:false});
+})();
+</script>
+</body>
+</html>
