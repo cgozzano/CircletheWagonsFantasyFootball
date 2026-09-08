@@ -300,6 +300,19 @@
   }
   .dues-badge.paid{background:rgba(63,182,139,0.15); color:var(--win);}
   .dues-badge.unpaid{background:rgba(217,84,75,0.15); color:var(--loss);}
+  .dues-row.editable{cursor:pointer;}
+  .dues-row.editable:hover{background:var(--surface-2); filter:brightness(1.15);}
+  .dues-editor{
+    border:1px solid var(--line); border-radius:8px; padding:16px; margin-bottom:20px; background:var(--surface-2);
+  }
+  .dues-code{
+    width:100%; min-height:110px; background:var(--bg); color:var(--win); border:1px solid var(--line);
+    border-radius:6px; padding:12px; font-family:'IBM Plex Mono',monospace; font-size:11px; line-height:1.6;
+    resize:vertical;
+  }
+  .dues-copy-confirm{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--win); margin-left:10px;
+  }
 
   /* ===== Forecasts ===== */
   .fc-list{display:grid; gap:10px;}
@@ -644,6 +657,14 @@
 
       <div class="dues-summary" id="dues-summary"></div>
 
+      <button class="btn secondary" id="dues-edit-toggle" style="margin-bottom:16px;">🔒 Commissioner Edit Mode</button>
+      <div id="dues-editor" class="dues-editor" style="display:none;">
+        <p class="hint">Click any name to flip Paid/Not Paid. This only changes what <i>you</i> see right now — when you're done, copy the code below and paste it over the <code>DUES</code> block in <code>index.html</code>, then commit.</p>
+        <textarea id="dues-code-output" class="dues-code" readonly></textarea>
+        <button class="btn" id="dues-copy-btn" style="margin-top:10px;">Copy Code to Clipboard</button>
+        <span id="dues-copy-confirm" class="dues-copy-confirm"></span>
+      </div>
+
       <div class="divisions">
         <div class="division">
           <div class="division-head elite">Elite Super League</div>
@@ -656,7 +677,7 @@
       </div>
 
       <p class="hint" style="margin-top:18px;">
-        This list is maintained by hand, not connected to any payment processor. To mark someone paid, the Supreme Commissioner edits the <code>DUES</code> list in <code>index.html</code> and flips their entry to <code>paid: true</code>, then commits the change.
+        This list is maintained by hand, not connected to any payment processor — there's no real server-side security here, just a password gate to prevent casual clicking. To mark someone paid, use Commissioner Edit Mode above, then paste the generated code into the <code>DUES</code> list in <code>index.html</code> and commit.
       </p>
     </section>
 
@@ -1214,6 +1235,12 @@ const DUES = {
 };
 const DUES_PER_PERSON = 60; // $50 base + $10 FSB bonus, per the Constitution
 
+// Not real security — just a friction gate so nobody flips statuses by accident.
+// Since this is a static site, viewing the page source would reveal this password;
+// it's meant to deter casual clicks, not to be a genuine access control.
+const DUES_EDIT_PASSWORD = "supreme2026";
+let duesEditMode = false;
+
 function renderDues(){
   const all = [...DUES.premier, ...DUES.nonpremier];
   const paidCount = all.filter(p=>p.paid).length;
@@ -1228,8 +1255,8 @@ function renderDues(){
   `;
 
   function list(key){
-    return DUES[key].map(p => `
-      <div class="dues-row">
+    return DUES[key].map((p, idx) => `
+      <div class="dues-row ${duesEditMode ? 'editable' : ''}" data-league="${key}" data-idx="${idx}">
         <span class="dues-name">${p.name}</span>
         <span class="dues-badge ${p.paid ? 'paid' : 'unpaid'}">${p.paid ? 'Paid' : 'Not Paid'}</span>
       </div>
@@ -1237,7 +1264,56 @@ function renderDues(){
   }
   document.getElementById('dues-premier').innerHTML = list('premier');
   document.getElementById('dues-nonpremier').innerHTML = list('nonpremier');
+
+  if(duesEditMode){
+    document.querySelectorAll('.dues-row.editable').forEach(row=>{
+      row.addEventListener('click', ()=>{
+        const league = row.dataset.league, idx = +row.dataset.idx;
+        DUES[league][idx].paid = !DUES[league][idx].paid;
+        renderDues();
+        updateDuesCodeOutput();
+      });
+    });
+  }
 }
+
+function updateDuesCodeOutput(){
+  const fmt = (key) => DUES[key].map(p => `    { name:"${p.name}", paid:${p.paid} },`).join('\n');
+  const code = `const DUES = {\n  premier: [\n${fmt('premier')}\n  ],\n  nonpremier: [\n${fmt('nonpremier')}\n  ],\n};`;
+  document.getElementById('dues-code-output').value = code;
+}
+
+document.getElementById('dues-edit-toggle').addEventListener('click', ()=>{
+  if(duesEditMode){
+    duesEditMode = false;
+    document.getElementById('dues-editor').style.display = 'none';
+    document.getElementById('dues-edit-toggle').textContent = '🔒 Commissioner Edit Mode';
+    renderDues();
+    return;
+  }
+  const input = prompt("Enter the Commissioner edit password:");
+  if(input === DUES_EDIT_PASSWORD){
+    duesEditMode = true;
+    document.getElementById('dues-editor').style.display = 'block';
+    document.getElementById('dues-edit-toggle').textContent = '🔓 Exit Edit Mode';
+    updateDuesCodeOutput();
+    renderDues();
+  } else if(input !== null){
+    alert("Incorrect password.");
+  }
+});
+
+document.getElementById('dues-copy-btn').addEventListener('click', async ()=>{
+  const text = document.getElementById('dues-code-output').value;
+  try{
+    await navigator.clipboard.writeText(text);
+    const confirm = document.getElementById('dues-copy-confirm');
+    confirm.textContent = '✓ Copied!';
+    setTimeout(()=>{ confirm.textContent = ''; }, 2500);
+  }catch(e){
+    alert('Could not copy automatically — select the text box and copy manually.');
+  }
+});
 
 // ---------- init ----------
 (async function init(){
